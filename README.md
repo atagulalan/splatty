@@ -10,9 +10,9 @@
 
 # Splatty
 
-**Splatty** = **(S)**ync**(pla)**y + **(tty)** — a terminal (tty) client for Syncplay. ("platy"
-also nods to the platypus above: an egg-laying, duck-billed oddball, fitting company for a project
-that reimplements every Syncplay quirk right down to the weird parts.)
+**Splatty** = <b>(S)</b>ync<b>(pla)</b>y + <b>(tty)</b> — a terminal (tty) client for Syncplay.
+("platy" also nods to the platypus above: an egg-laying, duck-billed oddball, fitting company for
+a project that reimplements every Syncplay quirk right down to the weird parts.)
 
 Splatty is a Syncplay-compatible watch-together client with a terminal (Ink/React) GUI. Built on
 the protocol specs in [`spec/`](spec/), based on the original Python Syncplay implementation.
