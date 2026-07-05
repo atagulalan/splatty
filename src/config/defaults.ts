@@ -6,11 +6,11 @@ import {
   DEFAULT_SLOWDOWN_KICKIN_THRESHOLD_S,
   PRIVACY_SENDRAW,
 } from "../protocol/constants.js";
-import type { PlattyConfig } from "./types.js";
+import type { SplattyConfig } from "./types.js";
 
 export const DEFAULT_TRUSTED_DOMAINS = ["youtube.com", "youtu.be"];
 
-export function defaultConfig(name?: string): PlattyConfig {
+export function defaultConfig(name?: string): SplattyConfig {
   return {
     host: DEFAULT_CLIENT_HOST,
     port: DEFAULT_CLIENT_PORT,

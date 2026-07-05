@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Box, Text } from "ink";
 import { SyncplayClient } from "../client/SyncplayClient.js";
 import type { Player } from "../players/BasePlayer.js";
-import type { PlattyConfig } from "../config/types.js";
+import type { SplattyConfig } from "../config/types.js";
 import { saveConfig } from "../config/store.js";
 import { configToClientOptions } from "../config/toClientOptions.js";
 import { setConfigValue } from "../config/setValue.js";
@@ -10,46 +10,53 @@ import { App } from "./App.js";
 import { SetupWizard } from "./SetupWizard.js";
 import { SettingsPanel } from "./SettingsPanel.js";
 
-export type PlattyView = "main" | "wizard" | "settings";
+export type SplattyView = "main" | "wizard" | "settings";
 
-export interface PlattyAppProps {
-  config: PlattyConfig;
+export interface SplattyAppProps {
+  config: SplattyConfig;
   client: SyncplayClient;
-  createPlayer: (config: PlattyConfig) => Player;
+  createPlayer: (config: SplattyConfig) => Player;
   initialFile?: string;
   onExit: () => void;
-  onReconnect: (config: PlattyConfig, player: Player) => SyncplayClient;
+  onReconnect: (config: SplattyConfig, player: Player) => SyncplayClient;
+  /** Keep SIGINT/waitUntilExit cleanup in sync after reconnect/wizard swaps the client. */
+  registerActiveClient?: (client: SyncplayClient) => void;
   /** --no-store: skip persisting config changes to disk for this run. */
   noStore?: boolean;
   /** --debug: surface extra internal state-change lines in the log. */
   debug?: boolean;
 }
 
-export function PlattyApp({
+export function SplattyApp({
   config: initialConfig,
   client: initialClient,
   createPlayer,
   initialFile,
   onExit,
   onReconnect,
+  registerActiveClient,
   noStore,
   debug,
-}: PlattyAppProps): React.JSX.Element {
-  const [config, setConfig] = useState<PlattyConfig>(initialConfig);
+}: SplattyAppProps): React.JSX.Element {
+  const [config, setConfig] = useState<SplattyConfig>(initialConfig);
   const [client, setClient] = useState<SyncplayClient>(initialClient);
   // forceGuiPrompt forces the wizard on launch even if setup was already completed (see
   // ts/src/config/types.ts's forceGuiPrompt and spec/config/ui-and-commands.md's "Misc" tab).
-  const [view, setView] = useState<PlattyView>(
+  const [view, setView] = useState<SplattyView>(
     initialConfig.setupComplete && !initialConfig.forceGuiPrompt ? "main" : "wizard",
   );
 
   const persist = useCallback(
-    (next: PlattyConfig): void => {
+    (next: SplattyConfig): void => {
       if (!noStore) saveConfig(next);
       setConfig(next);
     },
     [noStore],
   );
+
+  useEffect(() => {
+    registerActiveClient?.(client);
+  }, [client, registerActiveClient]);
 
   useEffect(() => {
     const handleShutdown = (): void => {
@@ -62,19 +69,20 @@ export function PlattyApp({
   }, [client, onExit]);
 
   const reconnect = useCallback(
-    (next: PlattyConfig, file?: string): void => {
+    (next: SplattyConfig, file?: string): void => {
       client.stop();
       const player = createPlayer(next);
       const nextClient = onReconnect(next, player);
+      registerActiveClient?.(nextClient);
       setClient(nextClient);
       if (file) void player.open(file);
       void nextClient.start();
     },
-    [client, createPlayer, onReconnect],
+    [client, createPlayer, onReconnect, registerActiveClient],
   );
 
   const handleWizardComplete = useCallback(
-    (next: PlattyConfig): void => {
+    (next: SplattyConfig): void => {
       persist(next);
       setView("main");
       reconnect(next, initialFile);
@@ -101,7 +109,7 @@ export function PlattyApp({
   );
 
   const handleSettingsSave = useCallback(
-    (next: PlattyConfig): void => {
+    (next: SplattyConfig): void => {
       persist(next);
       reconnect(next);
       setView("main");
@@ -113,7 +121,7 @@ export function PlattyApp({
     return (
       <Box flexDirection="column">
         <Text bold color="cyan">
-          Platty
+          Splatty
         </Text>
         <SetupWizard config={config} onComplete={handleWizardComplete} onCancel={handleWizardCancel} />
       </Box>
@@ -142,6 +150,6 @@ export function PlattyApp({
   );
 }
 
-export function createClient(config: PlattyConfig, player: Player): SyncplayClient {
+export function createClient(config: SplattyConfig, player: Player): SyncplayClient {
   return new SyncplayClient(configToClientOptions(config), player);
 }

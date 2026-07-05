@@ -2,14 +2,14 @@ import { mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, dirname, resolve } from "node:path";
 import ini from "ini";
-import type { PlattyConfig, ConfigKey, PlayerKind } from "./types.js";
+import type { SplattyConfig, ConfigKey, PlayerKind } from "./types.js";
 import { defaultConfig } from "./defaults.js";
 import { INI_STRUCTURE } from "./iniStructure.js";
 import type { PrivacyMode } from "../protocol/constants.js";
 import { DEFAULT_CLIENT_PORT, PUBLIC_SYNCPLAY_HOST } from "../protocol/constants.js";
 
-const CONFIG_DIR_NAME = "platty";
-const CONFIG_FILE_NAME = "platty.ini";
+const CONFIG_DIR_NAME = "splatty";
+const CONFIG_FILE_NAME = "splatty.ini";
 
 const SERIALISED_KEYS: ConfigKey[] = [
   "roomList",
@@ -144,7 +144,7 @@ function parseRawValue(key: ConfigKey, raw: string | undefined, fallback: unknow
   return raw;
 }
 
-function configToIni(config: PlattyConfig): Record<string, Record<string, string>> {
+function configToIni(config: SplattyConfig): Record<string, Record<string, string>> {
   const out: Record<string, Record<string, string>> = {};
   for (const [section, keys] of Object.entries(INI_STRUCTURE)) {
     out[section] = {};
@@ -156,7 +156,7 @@ function configToIni(config: PlattyConfig): Record<string, Record<string, string
 }
 
 /** Parses only the keys actually present (non-empty) in a parsed ini document. */
-function iniToPartial(parsed: Record<string, Record<string, string>>): Partial<PlattyConfig> {
+function iniToPartial(parsed: Record<string, Record<string, string>>): Partial<SplattyConfig> {
   const out: Record<string, unknown> = {};
   for (const [section, keys] of Object.entries(INI_STRUCTURE)) {
     const sectionData = parsed[section] ?? {};
@@ -166,14 +166,14 @@ function iniToPartial(parsed: Record<string, Record<string, string>>): Partial<P
       out[key] = parseRawValue(key, raw, undefined);
     }
   }
-  return out as Partial<PlattyConfig>;
+  return out as Partial<SplattyConfig>;
 }
 
-function iniToConfig(parsed: Record<string, Record<string, string>>, base: PlattyConfig): PlattyConfig {
+function iniToConfig(parsed: Record<string, Record<string, string>>, base: SplattyConfig): SplattyConfig {
   return { ...base, ...iniToPartial(parsed) };
 }
 
-export function loadConfig(defaultName?: string): PlattyConfig {
+export function loadConfig(defaultName?: string): SplattyConfig {
   const path = getConfigPath();
   if (!existsSync(path)) return defaultConfig(defaultName);
 
@@ -186,7 +186,7 @@ export function loadConfig(defaultName?: string): PlattyConfig {
 }
 
 /** syncplay.pl:8997 frequently resets connections; prefer 8998 for saved configs still on the old default. */
-function migratePublicServerConfig(config: PlattyConfig): PlattyConfig {
+function migratePublicServerConfig(config: SplattyConfig): SplattyConfig {
   if (config.host.toLowerCase() === PUBLIC_SYNCPLAY_HOST && config.port === 8997) {
     return { ...config, port: DEFAULT_CLIENT_PORT };
   }
@@ -202,7 +202,7 @@ const DIRECTORY_CONFIG_NAMES = [".syncplay", "syncplay.ini"];
  * closest to the file wins. See spec/config/resolution-and-precedence.md (~lines 31-49) —
  * these files apply at the *highest* precedence of all, above the global config file.
  */
-export function loadDirectoryConfigChain(filePath: string): Partial<PlattyConfig> {
+export function loadDirectoryConfigChain(filePath: string): Partial<SplattyConfig> {
   const dirs: string[] = [];
   let dir = dirname(resolve(filePath));
   dirs.push(dir);
@@ -214,7 +214,7 @@ export function loadDirectoryConfigChain(filePath: string): Partial<PlattyConfig
   }
   dirs.reverse(); // root-most directory first, leaf (closest to the file) last
 
-  let merged: Partial<PlattyConfig> = {};
+  let merged: Partial<SplattyConfig> = {};
   for (const d of dirs) {
     for (const name of DIRECTORY_CONFIG_NAMES) {
       const candidate = join(d, name);
@@ -231,14 +231,14 @@ export function loadDirectoryConfigChain(filePath: string): Partial<PlattyConfig
   return merged;
 }
 
-export function saveConfig(config: PlattyConfig): void {
+export function saveConfig(config: SplattyConfig): void {
   ensureConfigDir();
   const path = getConfigPath();
   const data = configToIni(config);
   writeFileSync(path, ini.stringify(data), "utf8");
 }
 
-export function needsSetup(config: PlattyConfig): boolean {
+export function needsSetup(config: SplattyConfig): boolean {
   return !config.setupComplete || !config.name.trim() || !config.host.trim() || !config.room.trim();
 }
 
@@ -255,7 +255,7 @@ export interface CliOverrides {
   language?: string;
 }
 
-export function mergeConfig(base: PlattyConfig, overrides: CliOverrides): PlattyConfig {
+export function mergeConfig(base: SplattyConfig, overrides: CliOverrides): SplattyConfig {
   const merged = { ...base };
   if (overrides.host) merged.host = overrides.host;
   if (overrides.port !== undefined) merged.port = overrides.port;

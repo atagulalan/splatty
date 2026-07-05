@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Text, useInput } from "ink";
 import TextInput from "ink-text-input";
-import type { PlattyConfig, ConfigKey } from "../config/types.js";
+import type { SplattyConfig, ConfigKey } from "../config/types.js";
 import { CONFIG_FIELDS } from "../config/iniStructure.js";
 import { formatConfigValue } from "../config/store.js";
 import { setConfigValue } from "../config/setValue.js";
 
 export interface SettingsPanelProps {
-  config: PlattyConfig;
-  onSave: (config: PlattyConfig) => void;
+  config: SplattyConfig;
+  onSave: (config: SplattyConfig) => void;
   onClose: () => void;
 }
 
@@ -20,7 +20,7 @@ function tabLabel(section: string): string {
 }
 
 export function SettingsPanel({ config, onSave, onClose }: SettingsPanelProps): React.JSX.Element {
-  const [draft, setDraft] = useState<PlattyConfig>({ ...config });
+  const [draft, setDraft] = useState<SplattyConfig>({ ...config });
   const [activeTab, setActiveTab] = useState(0);
   const [selected, setSelected] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
@@ -99,7 +99,7 @@ export function SettingsPanel({ config, onSave, onClose }: SettingsPanelProps): 
   return (
     <Box flexDirection="column" padding={1} borderStyle="double" borderColor="magenta">
       <Text bold color="magenta">
-        Platty Settings
+        Splatty Settings
       </Text>
       <Text dimColor>←/→ or h/l tab · ↑/↓ or j/k field · Enter edit · Ctrl+S save · Esc close</Text>
       {message ? <Text color="green">{message}</Text> : null}

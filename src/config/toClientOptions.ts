@@ -1,9 +1,9 @@
 import type { SyncplayClientOptions } from "../client/SyncplayClient.js";
 import type { PrivacyMode } from "../protocol/constants.js";
-import type { PlattyConfig } from "./types.js";
+import type { SplattyConfig } from "./types.js";
 import { osdSettingsFromConfig } from "./toSyncplayIntfConfig.js";
 
-export function configToClientOptions(config: PlattyConfig): SyncplayClientOptions {
+export function configToClientOptions(config: SplattyConfig): SyncplayClientOptions {
   return {
     host: config.host,
     port: config.port,

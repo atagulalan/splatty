@@ -1,10 +1,10 @@
 import type { SyncplayIntfConfig } from "../players/mpvSyncplayIntf.js";
-import type { PlattyConfig } from "./types.js";
+import type { SplattyConfig } from "./types.js";
 
 /** MAX_CHAT_MESSAGE_LENGTH from source/syncplay/constants.py */
 const MAX_CHAT_MESSAGE_LENGTH = 150;
 
-export function syncplayIntfFromConfig(config: PlattyConfig): SyncplayIntfConfig {
+export function syncplayIntfFromConfig(config: SplattyConfig): SyncplayIntfConfig {
   return {
     chatInputEnabled: config.chatInputEnabled,
     chatInputFontFamily: config.chatInputFontFamily,
@@ -34,7 +34,7 @@ export function syncplayIntfFromConfig(config: PlattyConfig): SyncplayIntfConfig
   };
 }
 
-export function osdSettingsFromConfig(config: PlattyConfig) {
+export function osdSettingsFromConfig(config: SplattyConfig) {
   return {
     showOSD: config.showOSD,
     showOSDWarnings: config.showOSDWarnings,

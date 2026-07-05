@@ -26,7 +26,7 @@ function user(username: string, room: string): UserInfo {
 
 // --- fileCompleter ---
 
-const root = mkdtempSync(join(tmpdir(), "platty-completion-test-"));
+const root = mkdtempSync(join(tmpdir(), "splatty-completion-test-"));
 mkdirSync(join(root, "Movies"));
 writeFileSync(join(root, "Movies", "foo.mkv"), "");
 writeFileSync(join(root, "Movies", "foo.srt"), "");
@@ -157,7 +157,7 @@ try {
 // --- getCompletions: /qa, /qas file completion wiring (delegates to fileCompleter) ---
 
 {
-  const dir = mkdtempSync(join(tmpdir(), "platty-completion-qa-"));
+  const dir = mkdtempSync(join(tmpdir(), "splatty-completion-qa-"));
   writeFileSync(join(dir, "movie.mkv"), "");
   try {
     const ctx = baseCtx();

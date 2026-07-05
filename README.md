@@ -1,6 +1,17 @@
-# Platty
+```
+   __
+ <(o )___,,,
+  ( ._> /
+   `---'
+```
 
-Platty is a Syncplay-compatible watch-together client with a terminal (Ink/React) GUI. Built on
+# Splatty
+
+**Splatty** = **(S)**ync**(pla)**y + **(tty)** — a terminal (tty) client for Syncplay. ("platy"
+also nods to the platypus above: an egg-laying, duck-billed oddball, fitting company for a project
+that reimplements every Syncplay quirk right down to the weird parts.)
+
+Splatty is a Syncplay-compatible watch-together client with a terminal (Ink/React) GUI. Built on
 the protocol specs in [`spec/`](spec/), based on the original Python Syncplay implementation.
 
 ## Quick start
@@ -12,16 +23,16 @@ npm install
 npm run server -- --port 8999
 
 # Terminal 2: first launch runs the setup wizard (name, server, room, media dirs, player)
-npm run platty -- --host 127.0.0.1 --port 8999 --player null
+npm run splatty -- --host 127.0.0.1 --port 8999 --player null
 
 # Or with a real player:
-npm run platty -- --host 127.0.0.1 --port 8999 --player mpv /path/to/video.mkv
+npm run splatty -- --host 127.0.0.1 --port 8999 --player mpv /path/to/video.mkv
 ```
 
 ### Configuration
 
-Settings are stored in `~/.config/platty/platty.ini` using the same INI schema as Syncplay's
-`syncplay.ini` (sections: `server_data`, `client_settings`, `gui`, `general`, plus a `[platty]`
+Settings are stored in `~/.config/splatty/splatty.ini` using the same INI schema as Syncplay's
+`syncplay.ini` (sections: `server_data`, `client_settings`, `gui`, `general`, plus a `[splatty]`
 section for TUI-specific options).
 
 On first launch, a setup wizard collects username, server, port, room, password, media
@@ -72,13 +83,13 @@ without typing `/qd`; Ctrl+↓ or Esc returns focus to the input.
 
 ```
 src/
-  config/     platty.ini load/save, defaults, /set parsing (Syncplay-compatible schema)
+  config/     splatty.ini load/save, defaults, /set parsing (Syncplay-compatible schema)
   protocol/   wire framing, message types, ping/RTT, version negotiation, room-password hashing
   server/     Room/Watcher/RoomManager, per-connection protocol handling, MOTD, CLI
   client/     state machine, sync algorithm, playlist, userlist, privacy/file-matching
   players/    BasePlayer interface + mpv (JSON-IPC) / VLC (Lua telnet) / NullPlayer (headless)
   tui/        Ink components (status bar, user list, chat/log, playlist, setup wizard, settings)
-  bin/        CLI entry points (platty-client, syncplay-server)
+  bin/        CLI entry points (splatty-client, syncplay-server)
 test/
   smoke.ts    end-to-end test: real server + two real clients (NullPlayer), no mpv/VLC needed
 ```
@@ -87,7 +98,7 @@ test/
 
 - **No TLS.** The server always replies `TLS.startTLS=false`; connections are always plaintext.
 - **No SQLite persistence** on the server side.
-- **No per-directory `.syncplay` file precedence chain** — config lives in `~/.config/platty/`.
+- **No per-directory `.syncplay` file precedence chain** — config lives in `~/.config/splatty/`.
 - **GUI/OSD settings** apply to the mpv/VLC player overlay (via `syncplayintf.lua` for mpv). The TUI log mirrors the same notification text.
 
 ## Testing
@@ -96,3 +107,8 @@ test/
 npm run typecheck   # tsc --noEmit
 npm test            # end-to-end smoke test (server + 2 clients, NullPlayer, no external deps)
 ```
+
+## License
+
+Apache License 2.0 — see [LICENSE](LICENSE). Splatty is an independent, from-spec
+reimplementation and isn't officially affiliated with the Syncplay project.

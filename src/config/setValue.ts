@@ -1,4 +1,4 @@
-import type { ConfigKey, PlattyConfig, PlayerKind } from "./types.js";
+import type { ConfigKey, SplattyConfig, PlayerKind } from "./types.js";
 import { CONFIG_ALIASES, CONFIG_FIELDS } from "./iniStructure.js";
 import type { PrivacyMode } from "../protocol/constants.js";
 
@@ -44,7 +44,7 @@ function parseBoolean(raw: string): boolean | null {
 
 const CONNECTION_KEYS: ConfigKey[] = ["name", "host", "port", "password", "room", "playerPath", "playerKind"];
 
-export function setConfigValue(config: PlattyConfig, rawKey: string, rawValue: string): SetResult {
+export function setConfigValue(config: SplattyConfig, rawKey: string, rawValue: string): SetResult {
   const key = CONFIG_ALIASES[rawKey.toLowerCase()];
   if (!key) {
     const known = Object.keys(CONFIG_ALIASES)

@@ -36,7 +36,7 @@ export function loadMotdFile(path: string): string {
 
 /** "You are using Syncplay {} but a newer version is available" (messages_en.py), adapted. */
 function oldClientWarning(clientVersion: string): string {
-  return `You are using Syncplay/Platty ${clientVersion}, but a newer version may be available.`;
+  return `You are using Syncplay/Splatty ${clientVersion}, but a newer version may be available.`;
 }
 
 /**

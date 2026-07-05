@@ -35,7 +35,7 @@ export function ConnectionHeader({
     <Box justifyContent="space-between">
       <Box gap={1}>
         <Text bold color="cyan">
-          Platty
+          Splatty
         </Text>
         {powerUserMode ? (
           <Text bold color="black" backgroundColor="yellow">

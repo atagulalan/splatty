@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// CLI entry point for Platty — a Syncplay-compatible terminal client.
-// Config is stored in ~/.config/platty/platty.ini (Syncplay-compatible INI schema).
+// CLI entry point for Splatty — a Syncplay-compatible terminal client.
+// Config is stored in ~/.config/splatty/splatty.ini (Syncplay-compatible INI schema).
 
 import React from "react";
 import { render } from "ink";
@@ -9,7 +9,8 @@ import { userInfo } from "node:os";
 import { randomBytes } from "node:crypto";
 import { existsSync, readFileSync, unlinkSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { PlattyApp, createClient } from "../tui/PlattyApp.js";
+import { SplattyApp, createClient } from "../tui/SplattyApp.js";
+import type { SyncplayClient } from "../client/SyncplayClient.js";
 import { createPlayer, type PlayerKind } from "../players/playerFactory.js";
 import { NullPlayer } from "../players/NullPlayer.js";
 import { DEFAULT_CLIENT_HOST, DEFAULT_CLIENT_PORT } from "../protocol/constants.js";
@@ -21,7 +22,7 @@ import {
   getConfigPath,
   type CliOverrides,
 } from "../config/store.js";
-import type { PlattyConfig } from "../config/types.js";
+import type { SplattyConfig } from "../config/types.js";
 import type { Player } from "../players/BasePlayer.js";
 import { isURL } from "../client/mediaUtils.js";
 
@@ -47,8 +48,8 @@ function readPackageVersion(): string {
 
 const program = new Command();
 program
-  .name("platty")
-  .description("Platty — Syncplay-compatible watch-together client (terminal UI)")
+  .name("splatty")
+  .description("Splatty — Syncplay-compatible watch-together client (terminal UI)")
   .option("-a, --host <host>", "server address")
   .option("--port <port>", "server port")
   .option("-n, --name <username>", "your username")
@@ -94,7 +95,7 @@ const cliOverrides: CliOverrides = {
   // config's PlayerKind covers every real (non-stub) player: mpv/vlc/null plus the mpv-family
   // variants. mplayer/mpc-hc/mpc-be are deliberately excluded (playerFactory.ts stubs them with
   // a hard error) so they're CLI-only via makePlayer() below, never persisted as a saved setting.
-  playerKind: opts.player as PlattyConfig["playerKind"] | undefined,
+  playerKind: opts.player as SplattyConfig["playerKind"] | undefined,
   playerPath: opts.playerPath,
   forceSetup: opts.setup,
   forceGuiPrompt: opts.forceGuiPrompt,
@@ -102,7 +103,7 @@ const cliOverrides: CliOverrides = {
 };
 
 const loaded = loadConfig(defaultUsername());
-let config: PlattyConfig = mergeConfig(loaded, cliOverrides);
+let config: SplattyConfig = mergeConfig(loaded, cliOverrides);
 
 // Per-directory `.syncplay` walk, applied at the highest precedence of all (see
 // spec/config/resolution-and-precedence.md ~lines 31-49) — only meaningful for local files, not URLs.
@@ -116,7 +117,7 @@ if (!config.name) config.name = defaultUsername();
 if (opts.setup) config.setupComplete = false;
 const showWizard = needsSetup(config) || opts.setup || config.forceGuiPrompt;
 
-function makePlayer(cfg: PlattyConfig): Player {
+function makePlayer(cfg: SplattyConfig): Player {
   const kind = cfg.playerKind ?? (opts.player as PlayerKind) ?? "mpv";
   const path = cfg.playerPath || undefined;
   return createPlayer(kind, path, cfg);
@@ -152,22 +153,29 @@ if (opts.debug) {
 
 let exiting = false;
 let unmountInk: (() => void) | undefined;
+// Reconnect/wizard swap in a new SyncplayClient + player; SIGINT/waitUntilExit must stop that one.
+let activeClient = client;
+
+function registerActiveClient(next: SyncplayClient): void {
+  activeClient = next;
+}
 
 function gracefulExit(): void {
   if (exiting) return;
   exiting = true;
-  client.stop();
+  activeClient.stop();
   unmountInk?.();
 }
 
 const { unmount, waitUntilExit } = render(
-  <PlattyApp
+  <SplattyApp
     config={config}
     client={client}
     createPlayer={makePlayer}
     initialFile={file}
     onExit={gracefulExit}
     onReconnect={(cfg, p) => createClient(cfg, p)}
+    registerActiveClient={registerActiveClient}
     noStore={opts.store === false}
     debug={!!opts.debug}
   />,

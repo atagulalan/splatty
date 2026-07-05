@@ -1,10 +1,11 @@
 {
   "name": "splatty",
   "version": "0.1.0",
-  "description": "Platty — Syncplay-compatible watch-together client with a terminal (Ink) GUI",
+  "description": "Splatty — Syncplay-compatible watch-together client with a terminal (Ink) GUI",
+  "license": "Apache-2.0",
   "type": "module",
   "bin": {
-    "splatty": "dist/bin/platty-client.js"
+    "splatty": "dist/bin/splatty-client.js"
   },
   "files": [
     "dist",
@@ -15,13 +16,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atagulalan/platty.git"
+    "url": "git+https://github.com/atagulalan/splatty.git"
   },
-  "homepage": "https://github.com/atagulalan/platty#readme",
+  "homepage": "https://github.com/atagulalan/splatty#readme",
   "scripts": {
     "server": "tsx src/bin/syncplay-server.ts",
-    "client": "tsx src/bin/platty-client.tsx",
-    "platty": "tsx src/bin/platty-client.tsx",
+    "client": "tsx src/bin/splatty-client.tsx",
+    "splatty": "tsx src/bin/splatty-client.tsx",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "prepublishOnly": "npm run build",

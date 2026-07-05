@@ -109,7 +109,7 @@ async function main(): Promise<void> {
   log("PASS: playlist add propagated Alice -> Bob");
 
   // --- Auto file switch on join via shared playlist index -------------------------
-  const mediaDir = await mkdtemp(join(tmpdir(), "platty-smoke-"));
+  const mediaDir = await mkdtemp(join(tmpdir(), "splatty-smoke-"));
   const sharedFile = join(mediaDir, "shared.mkv");
   await writeFile(sharedFile, "");
 

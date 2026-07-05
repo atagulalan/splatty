@@ -1,6 +1,6 @@
 // See ../../spec/players/abstraction-and-selection.md#player-selection.
 
-import type { PlattyConfig } from "../config/types.js";
+import type { SplattyConfig } from "../config/types.js";
 import { syncplayIntfFromConfig } from "../config/toSyncplayIntfConfig.js";
 import type { Player } from "./BasePlayer.js";
 import { MpvPlayer } from "./mpvPlayer.js";
@@ -9,7 +9,7 @@ import { NullPlayer } from "./NullPlayer.js";
 
 export type PlayerKind = "mpv" | "vlc" | "null" | "mpvnet" | "iina" | "memento" | "mplayer" | "mpc-hc" | "mpc-be";
 
-export function createPlayer(kind: PlayerKind, executablePath?: string, config?: PlattyConfig): Player {
+export function createPlayer(kind: PlayerKind, executablePath?: string, config?: SplattyConfig): Player {
   const syncplayIntf = config ? syncplayIntfFromConfig(config) : undefined;
 
   switch (kind) {

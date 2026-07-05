@@ -72,7 +72,7 @@ export const INI_STRUCTURE: Record<string, ConfigKey[]> = {
     "showContactInfo",
   ],
   general: ["language", "checkForUpdatesAutomatically", "lastCheckedForUpdates"],
-  platty: ["playerKind", "setupComplete"],
+  splatty: ["playerKind", "setupComplete"],
 };
 
 export const CONFIG_FIELDS: ConfigFieldMeta[] = [

@@ -1,14 +1,14 @@
 ---
 id: tui-ux-plan
-title: "Platty TUI UX Plan: Autocomplete, Tiered Help, Panel Navigation"
+title: "Splatty TUI UX Plan: Autocomplete, Tiered Help, Panel Navigation"
 tags: [config, ui, tui, commands, autocomplete, plan]
 related: ["[[ui-and-commands]]", "[[../client/playlist-and-readiness]]"]
 status: planned
 ---
 
-# Platty TUI UX Plan: Autocomplete, Tiered Help, Panel Navigation
+# Splatty TUI UX Plan: Autocomplete, Tiered Help, Panel Navigation
 
-Plan for five related improvements to the Platty TypeScript TUI client (`ts/`). Today everything lives inline in `App.tsx` with a plain `ink-text-input` and read-only side panels — the work starts with a small refactor, then layers UX on top.
+Plan for five related improvements to the Splatty TypeScript TUI client (`ts/`). Today everything lives inline in `App.tsx` with a plain `ink-text-input` and read-only side panels — the work starts with a small refactor, then layers UX on top.
 
 **Requested features:**
 
@@ -96,7 +96,7 @@ Every short form gets an explicit long canonical name. Fill gaps from `source/sy
 | `/config` | `/settings` | basic |
 | `/exit` | `/quit` | basic |
 
-Platty-only: `/setup`, `/toggle-power-user` (new).
+Splatty-only: `/setup`, `/toggle-power-user` (new).
 
 ---
 

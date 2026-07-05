@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { Box, Text, useInput } from "ink";
 import TextInput from "ink-text-input";
-import type { PlattyConfig } from "../config/types.js";
+import type { SplattyConfig } from "../config/types.js";
 import { DEFAULT_CLIENT_PORT } from "../protocol/constants.js";
 
 export interface SetupWizardProps {
-  config: PlattyConfig;
-  onComplete: (config: PlattyConfig) => void;
+  config: SplattyConfig;
+  onComplete: (config: SplattyConfig) => void;
   onCancel?: () => void;
 }
 
 interface Step {
-  key: keyof PlattyConfig | "done";
+  key: keyof SplattyConfig | "done";
   label: string;
   hint: string;
   optional?: boolean;
-  parse?: (raw: string, config: PlattyConfig) => Partial<PlattyConfig>;
+  parse?: (raw: string, config: SplattyConfig) => Partial<SplattyConfig>;
 }
 
 const STEPS: Step[] = [
@@ -49,7 +49,7 @@ const STEPS: Step[] = [
   {
     key: "mediaSearchDirectories",
     label: "Media directories",
-    hint: "Comma-separated paths where Platty searches for media files",
+    hint: "Comma-separated paths where Splatty searches for media files",
     optional: true,
     parse: (raw) => ({
       mediaSearchDirectories: raw
@@ -63,7 +63,7 @@ const STEPS: Step[] = [
     label: "Player",
     hint: "mpv, vlc, or null (no player)",
     parse: (raw, config) => {
-      const kind = raw.toLowerCase() as PlattyConfig["playerKind"];
+      const kind = raw.toLowerCase() as SplattyConfig["playerKind"];
       const playerKind = kind === "vlc" || kind === "null" ? kind : "mpv";
       return {
         playerKind,
@@ -73,15 +73,15 @@ const STEPS: Step[] = [
   },
 ];
 
-function getStepValue(config: PlattyConfig, step: Step): string {
-  const v = config[step.key as keyof PlattyConfig];
+function getStepValue(config: SplattyConfig, step: Step): string {
+  const v = config[step.key as keyof SplattyConfig];
   if (Array.isArray(v)) return v.join(", ");
   if (typeof v === "number") return String(v);
   return String(v ?? "");
 }
 
 export function SetupWizard({ config, onComplete, onCancel }: SetupWizardProps): React.JSX.Element {
-  const [draft, setDraft] = useState<PlattyConfig>({ ...config });
+  const [draft, setDraft] = useState<SplattyConfig>({ ...config });
   const [stepIndex, setStepIndex] = useState(0);
   const [value, setValue] = useState(getStepValue(draft, STEPS[0]!));
 
@@ -96,7 +96,7 @@ export function SetupWizard({ config, onComplete, onCancel }: SetupWizardProps):
     const trimmed = raw.trim();
     if (!trimmed && !step.optional) return;
 
-    let patch: Partial<PlattyConfig> = {};
+    let patch: Partial<SplattyConfig> = {};
     if (step.parse) {
       patch = step.parse(trimmed, draft);
     } else if (step.key !== "done") {
@@ -119,7 +119,7 @@ export function SetupWizard({ config, onComplete, onCancel }: SetupWizardProps):
   return (
     <Box flexDirection="column" padding={1} borderStyle="double" borderColor="cyan">
       <Text bold color="cyan">
-        Platty Setup ({stepIndex + 1}/{STEPS.length})
+        Splatty Setup ({stepIndex + 1}/{STEPS.length})
       </Text>
       <Text dimColor>{step.optional ? "(optional) " : ""}{step.hint}</Text>
       <Box marginTop={1}>

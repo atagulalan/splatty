@@ -1,5 +1,5 @@
-// Platty configuration — mirrors Syncplay's syncplay.ini schema (see spec/config/cli-and-settings-reference.md)
-// plus a small [platty] section for TUI-specific options.
+// Splatty configuration — mirrors Syncplay's syncplay.ini schema (see spec/config/cli-and-settings-reference.md)
+// plus a small [splatty] section for TUI-specific options.
 
 import type { PrivacyMode } from "../protocol/constants.js";
 
@@ -13,7 +13,7 @@ export type ChatOutputMode = "Chatroom" | "Scrolling";
 
 export type ChatInputPosition = "Top" | "Middle" | "Bottom";
 
-export interface PlattyConfig {
+export interface SplattyConfig {
   // server_data
   host: string;
   port: number;
@@ -100,12 +100,12 @@ export interface PlattyConfig {
   checkForUpdatesAutomatically: boolean | null;
   lastCheckedForUpdates: string;
 
-  // platty-specific (stored in [platty] section)
+  // splatty-specific (stored in [splatty] section)
   playerKind: PlayerKind;
   setupComplete: boolean;
 }
 
-export type ConfigKey = keyof PlattyConfig;
+export type ConfigKey = keyof SplattyConfig;
 
 export interface ConfigFieldMeta {
   key: ConfigKey;
